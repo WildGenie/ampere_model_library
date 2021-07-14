@@ -10,6 +10,8 @@ from profiler import print_profiler_results
 import shutil
 import csv
 
+# from tensorflow.python.framework.ops import disable_eager_execution
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Benchmark NLP models")
@@ -55,10 +57,16 @@ def benchmark_nlp_model(model, batch_size, sequence_length, profiler, precision)
 
     # if profiler or os.environ['DLS_PROFILER'] == '1':
     args = TensorFlowBenchmarkArguments(models=[model], batch_sizes=[batch_size],
-                                        sequence_lengths=[sequence_length], inference=True, memory=False,
-                                        fp16=fp16)
+                                        sequence_lengths=[sequence_length], inference=True, cuda=False, tpu=True,
+                                        verbose=False, memory=False, fp16=fp16, eager_mode=False, use_xla=False,
+                                        repeat=1, num_runs=1, multi_process=False, save_to_csv=False, log_print=False)
 
     benchmark = TensorFlowBenchmark(args)
+
+    if profiler or os.environ.get('DLS_PROFILER', "0") == "1":
+        tf.config.threading.set_inter_op_parallelism_threads(1)
+        # disable_eager_execution()
+
     results = benchmark.run()
 
     print(results)
