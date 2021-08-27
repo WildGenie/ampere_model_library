@@ -1,3 +1,12 @@
+Requirements:
+tensorflow_datasets
+tf2onnx
+
+On Arm with DLS enabled the accuracy drops. Looks like there is a issue with some optimization. 
+
+
+
+
 Current performance metrics:
 python train_and_accuracy/evaluate.py -m bert-base-uncased -p bert_base_uncased/
 {'accuracy': 0.8063725490196079, 'f1': 0.8685524126455907, 'combined_score': 0.8374624808325992} 6.255127429962158 408

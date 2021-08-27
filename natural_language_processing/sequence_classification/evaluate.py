@@ -12,10 +12,10 @@ def parse_args():
     parser.add_argument("-m", "--model_name",
                         type=str, required=True,
                         help="name of the pre-trained model from which the \
-                        trained model was trained")
-    parser.add_argument("-p", "--model_path",
-                        type=str, required=True,
-                        help="path of the trained model")
+                        trained model was trained[distilbert-base-uncased, bert-base-uncased]")
+    # parser.add_argument("-p", "--model_path",
+    #                     type=str, required=True,
+    #                     help="path of the trained model")
     parser.add_argument("-b", "--batch_size",
                         type=int, default=8,
                         help="batch size to feed the model with")
@@ -40,11 +40,13 @@ def main():
 	is_model_bert = True
 	if("distil" in args.model_name):
 		is_model_bert = False
+
+	model_path = nu.get_model(is_model_bert)
 	# Load pre-trained models
 	if(is_model_bert):
-		model = TFBertForSequenceClassification.from_pretrained(args.model_path)
+		model = TFBertForSequenceClassification.from_pretrained(model_path)
 	else:
-		model = TFDistilBertForSequenceClassification.from_pretrained(args.model_path)
+		model = TFDistilBertForSequenceClassification.from_pretrained(model_path)
 
 	eval_dataset, eval_label = nu.get_dataset(args.model_name, args.task_name, 
 		args.batch_size, is_model_bert)

@@ -18,9 +18,9 @@ def parse_args():
                         type=str, required=True,
                         help="name of the pre-trained model from which the \
                         trained model was trained")
-    parser.add_argument("-p", "--model_path",
-                        type=str, required=True,
-                        help="path of the trained model")
+    # parser.add_argument("-p", "--model_path",
+    #                     type=str, required=True,
+    #                     help="path of the trained model")
     parser.add_argument("-o", "--output_path",
                         type=str, required=True,
                         help="path of the converted onnx model")
@@ -90,11 +90,13 @@ def main():
     if("distil" in args.model_name):
         is_model_bert = False
 
+    model_path = nu.get_model(is_model_bert)
+
     # Load pre-trained models
     if(is_model_bert):
-        model = TFBertForSequenceClassification.from_pretrained(args.model_path)
+        model = TFBertForSequenceClassification.from_pretrained(model_path)
     else:
-        model = TFDistilBertForSequenceClassification.from_pretrained(args.model_path)
+        model = TFDistilBertForSequenceClassification.from_pretrained(model_path)
 
     export_onnx_model(model, args.output_path, is_model_bert)
     output_basename = args.output_path[:-5]
