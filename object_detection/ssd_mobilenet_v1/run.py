@@ -34,7 +34,7 @@ def parse_args():
                         type=str,
                         help="path to file with validation annotations")
     parser.add_argument("--profiler",
-                        action="store_true",
+                        action="store_true", required=True,
                         help="enables TF profiler tracing")
     return parser.parse_args()
 
