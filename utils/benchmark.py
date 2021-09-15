@@ -1,7 +1,6 @@
 import os
 import time
 import utils.misc as utils
-import utils.dataset as utils_ds
 from tqdm.auto import tqdm
 from utils.profiler_wrapper import TBTracer
 
@@ -122,7 +121,7 @@ def run_model(single_pass_func, runner, dataset, batch_size, num_of_runs, timeou
         else:
             for _ in tqdm(range(num_of_runs)):
                 single_pass_func(runner, dataset)
-    except utils_ds.OutOfInstances:
+    except utils.OutOfInstances:
         pass
     tracer.write()
     return dataset.summarize_accuracy(), runner.print_performance_metrics(batch_size)
