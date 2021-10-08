@@ -1,15 +1,15 @@
 import os
 import time
 import argparse
-import tensorflow as tf
-from tensorflow.python.saved_model import tag_constants
 import utils.misc as utils
 from utils.cv.coco import COCODataset
 from utils.cv.imagenet import ImageNet
 from utils.tf import TFSavedModelRunner
 from utils.tf import TFSavedModelKERAS
 from utils.benchmark import run_model
+import tensorflow as tf
 from tensorflow import keras
+from tensorflow.python.saved_model import tag_constants
 
 
 def parse_args():
@@ -58,8 +58,13 @@ def run_tf_fp32(model_path, batch_size, num_of_runs, timeout, images_path, label
                        pre_processing="VGG", is1001classes=True)
 
     runner = TFSavedModelKERAS()
-    saved_model_loaded = keras.models.load_model(model_path)
+    # saved_model_loaded = keras.models.load_model(model_path)
+    saved_model_loaded = tf.saved_model.load(model_path)
     runner.model = saved_model_loaded
+
+    # runner = TFSavedModelRunner()
+    # saved_model_loaded = tf.saved_model.load(model_path, tags=[tag_constants.SERVING])
+    # runner.model = saved_model_loaded.signatures['serving_default']
 
     return run_model(run_single_pass, runner, dataset, batch_size, num_of_runs, timeout)
 
