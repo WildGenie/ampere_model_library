@@ -24,6 +24,11 @@ class TFLiteRunner:
         self.__total_inference_time = 0.0
         self.__times_invoked = 0
 
+        if "CACHE_DIR_PATH" in os.environ:
+            hash = hashlib.md5(os.environ["DLS_NUMA_CPUS"].encode('utf-8')).hexdigest()
+            self.__csv_file = open(f'{str(Path(os.environ["CACHE_DIR_PATH"], hash))}.csv', mode='w')
+            self.__csv_writer = csv.writer(self.__csv_file, delimiter=',')
+
         print("\nRunning with TensorFlow Lite\n")
 
     def set_input_tensor(self, input_index: int, input_array):
@@ -53,6 +58,9 @@ class TFLiteRunner:
         start = time.time()
         self.__interpreter.invoke()
         finish = time.time()
+        if "CACHE_DIR_PATH" in os.environ and self.__times_invoked != 0:
+            self.__csv_writer.writerow([start, finish])
+
         self.__total_inference_time += finish - start
         if self.__times_invoked == 0:
             self.__warm_up_run_latency += finish - start
@@ -64,5 +72,7 @@ class TFLiteRunner:
 
         :param batch_size: int, batch size - if batch size was varying over the runs an average should be supplied
         """
+        if "CACHE_DIR_PATH" in os.environ:
+            self.__csv_file.close()
         return bench_utils.print_performance_metrics(
             self.__warm_up_run_latency, self.__total_inference_time, self.__times_invoked, batch_size)
