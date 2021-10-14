@@ -87,7 +87,7 @@ class TFFrozenModelRunner:
         output = self.__sess.run(self.__output_dict, self.__feed_dict)
         finish = time.time()
 
-        if "CACHE_DIR_PATH" in os.environ:
+        if "CACHE_DIR_PATH" in os.environ and self.__times_invoked != 0:
             self.__csv_writer.writerow([start, finish])
 
         self.__total_inference_time += finish - start
@@ -126,6 +126,11 @@ class TFSavedModelRunner:
         self.__total_inference_time = 0.0
         self.__times_invoked = 0
 
+        if "CACHE_DIR_PATH" in os.environ:
+            hash = hashlib.md5(os.environ["DLS_NUMA_CPUS"].encode('utf-8')).hexdigest()
+            self.__csv_file = open(f'{str(Path(os.environ["CACHE_DIR_PATH"], hash))}.csv', mode='w')
+            self.__csv_writer = csv.writer(self.__csv_file, delimiter=',')
+
     def run(self, input):
         """
         A function assigning values to input tensor, executing single pass over the network, measuring the time needed
@@ -137,6 +142,9 @@ class TFSavedModelRunner:
         start = time.time()
         output = self.model(input)
         finish = time.time()
+
+        if "CACHE_DIR_PATH" in os.environ and self.__times_invoked != 0:
+            self.__csv_writer.writerow([start, finish])
 
         self.__total_inference_time += finish - start
         if self.__times_invoked == 0:
@@ -152,4 +160,6 @@ class TFSavedModelRunner:
         """
         perf = bench_utils.print_performance_metrics(
             self.__warm_up_run_latency, self.__total_inference_time, self.__times_invoked, batch_size)
+        if "CACHE_DIR_PATH" in os.environ:
+            self.__csv_file.close()
         return perf
