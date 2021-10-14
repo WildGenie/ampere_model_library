@@ -74,6 +74,7 @@ def benchmark_func(func, num_of_runs, timeout, warm_up=True):
             csv_writer.writerow([start, finish])
         return finish - start
 
+    print(os.environ["CACHE_DIR_PATH"])
     if os.environ["CACHE_DIR_PATH"]:
         hash = hashlib.md5(os.environ["DLS_NUMA_CPUS"].encode('utf-8')).hexdigest()
         csv_file = open(f'{hash}.csv', mode='w')
