@@ -2,6 +2,7 @@ import os
 import csv
 import time
 import hashlib
+from pathlib import Path
 import tensorflow as tf
 import utils.benchmark as bench_utils
 
@@ -29,9 +30,9 @@ class TFFrozenModelRunner:
         self.__total_inference_time = 0.0
         self.__times_invoked = 0
 
-        if os.environ["CACHE_DIR_PATH"]:
+        if "CACHE_DIR_PATH" in os.environ:
             hash = hashlib.md5(os.environ["DLS_NUMA_CPUS"].encode('utf-8')).hexdigest()
-            self.__csv_file = open(f'{hash}.csv', mode='w')
+            self.__csv_file = open(f'{str(Path(os.environ["CACHE_DIR_PATH"], hash))}.csv', mode='w')
             self.__csv_writer = csv.writer(self.__csv_file, delimiter=',')
 
         print("\nRunning with TensorFlow\n")
@@ -86,7 +87,7 @@ class TFFrozenModelRunner:
         output = self.__sess.run(self.__output_dict, self.__feed_dict)
         finish = time.time()
 
-        if os.environ["CACHE_DIR_PATH"]:
+        if "CACHE_DIR_PATH" in os.environ:
             self.__csv_writer.writerow([start, finish])
 
         self.__total_inference_time += finish - start
@@ -104,7 +105,7 @@ class TFFrozenModelRunner:
         perf = bench_utils.print_performance_metrics(
             self.__warm_up_run_latency, self.__total_inference_time, self.__times_invoked, batch_size)
         self.__sess.close()
-        if os.environ["CACHE_DIR_PATH"]:
+        if "CACHE_DIR_PATH" in os.environ:
             self.__csv_file.close()
         return perf
 
