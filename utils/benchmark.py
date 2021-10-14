@@ -1,6 +1,4 @@
 import os
-import csv
-import hashlib
 import time
 import utils.misc as utils
 from tqdm.auto import tqdm
@@ -69,16 +67,7 @@ def benchmark_func(func, num_of_runs, timeout, warm_up=True):
     def benchmark(function):
         start = time.time()
         function()
-        finish = time.time()
-        if os.environ["CACHE_DIR_PATH"]:
-            csv_writer.writerow([start, finish])
-        return finish - start
-
-    print(os.environ["CACHE_DIR_PATH"])
-    if os.environ["CACHE_DIR_PATH"]:
-        hash = hashlib.md5(os.environ["DLS_NUMA_CPUS"].encode('utf-8')).hexdigest()
-        csv_file = open(f'{hash}.csv', mode='w')
-        csv_writer = csv.writer(csv_file, delimiter=',')
+        return time.time() - start
 
     if warm_up:
         _ = benchmark(func)
@@ -94,9 +83,6 @@ def benchmark_func(func, num_of_runs, timeout, warm_up=True):
         i = num_of_runs
         for _ in tqdm(range(num_of_runs)):
             total_time += benchmark(func)
-
-    if os.environ["CACHE_DIR_PATH"]:
-        csv_file.close()
 
     return total_time / i
 
