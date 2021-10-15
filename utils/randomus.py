@@ -20,7 +20,7 @@ class RandomDataset:
         initialization
         """
 
-        return np.random.rand(target_shape)
+        return np.random.rand(*target_shape)
 
     def submit_predictions(self, id_in_batch: int, byt):
         """
