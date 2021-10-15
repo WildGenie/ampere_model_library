@@ -1,6 +1,6 @@
 import argparse
 
-from utils.randomus import RandomDataset()
+from utils.randomus import RandomDataset
 from utils.tf import TFFrozenModelRunner
 from utils.benchmark import run_model
 
