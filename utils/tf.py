@@ -31,7 +31,7 @@ class TFFrozenModelRunner:
         self.__times_invoked = 0
 
         if "CACHE_DIR_PATH" in os.environ:
-            hash = hashlib.md5(os.environ["DLS_NUMA_CPUS"].encode('utf-8')).hexdigest()
+            hash = hashlib.md5(str(os.getpid()).encode('utf-8')).hexdigest()
             self.__csv_file = open(f'{str(Path(os.environ["CACHE_DIR_PATH"], hash))}.csv', mode='w')
             self.__csv_writer = csv.writer(self.__csv_file, delimiter=',')
 
@@ -127,7 +127,7 @@ class TFSavedModelRunner:
         self.__times_invoked = 0
 
         if "CACHE_DIR_PATH" in os.environ:
-            hash = hashlib.md5(os.environ["DLS_NUMA_CPUS"].encode('utf-8')).hexdigest()
+            hash = hashlib.md5(str(os.getpid()).encode('utf-8')).hexdigest()
             self.__csv_file = open(f'{str(Path(os.environ["CACHE_DIR_PATH"], hash))}.csv', mode='w')
             self.__csv_writer = csv.writer(self.__csv_file, delimiter=',')
 
