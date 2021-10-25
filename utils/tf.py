@@ -74,7 +74,6 @@ class TFFrozenModelRunner:
 
         :return: dict, output dictionary with tensor names and corresponding output
         """
-
         start = time.time()
         output = self.__sess.run(self.__output_dict, self.__feed_dict)
         finish = time.time()

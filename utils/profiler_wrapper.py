@@ -17,6 +17,7 @@ class TBTracer:
       options = tf.profiler.experimental.ProfilerOptions()
       stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
       self.logdir = 'logs/func/%s' % stamp
+      print("Log address: ", self.logdir)
       tf.profiler.experimental.start(self.logdir, options = options)
 
   def write(self):
