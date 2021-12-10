@@ -34,29 +34,26 @@ def parse_args():
     return parser.parse_args()
 
 
+# preprocess input
+predict_file = '/onspecta/Downloads/dev-v1.1.json'
+
+# Use read_squad_examples method from run_onnx_squad to read the input file
+eval_examples = read_squad_examples(input_file=predict_file)
+
+max_seq_length = 256
+doc_stride = 128
+max_query_length = 64
+batch_size = 1
+n_best_size = 20
+max_answer_length = 30
+
+vocab_file = os.path.join('/onspecta', 'Downloads', 'vocab.txt')
+tokenizer = FullTokenizer(vocab_file=vocab_file, do_lower_case=True)
+
+
 def run_onnx_fp(model_path, batch_size, num_of_runs, timeout, squad_path):
 
     def run_single_pass(onnx_runner, squad):
-        img = np.random.rand(28).astype(np.int64)
-
-        test = squad.get_input_ids_array()
-
-        # preprocess input
-        predict_file = '/onspecta/Downloads/dev-v1.1.json'
-
-        # Use read_squad_examples method from run_onnx_squad to read the input file
-        eval_examples = read_squad_examples(input_file=predict_file)
-
-        max_seq_length = 256
-        doc_stride = 128
-        max_query_length = 64
-        batch_size = 1
-        n_best_size = 20
-        max_answer_length = 30
-
-        vocab_file = os.path.join('/onspecta', 'Downloads', 'vocab.txt')
-        tokenizer = FullTokenizer(vocab_file=vocab_file, do_lower_case=True)
-
         input_ids, input_mask, segment_ids, extra_data = convert_examples_to_features(eval_examples, tokenizer,
                                                                                       max_seq_length, doc_stride,
                                                                                       max_query_length)
@@ -64,16 +61,20 @@ def run_onnx_fp(model_path, batch_size, num_of_runs, timeout, squad_path):
         onnx_runner.set_input_tensor("input_ids:0", input_ids)
         onnx_runner.set_input_tensor("input_mask:0", input_mask)
         onnx_runner.set_input_tensor("segment_ids:0", segment_ids)
-        onnx_runner.set_input_tensor("unique_ids_raw_output___9:0", extra_data)
+        onnx_runner.set_input_tensor("unique_ids_raw_output___9:0", np.random.randint(28, size=10))
 
-        output = onnx_runner.run(['unstack:1', 'unstack:0', 'unique_ids:0'])
+        # tf_runner.set_input_tensor("input_ids:0", squad.get_input_ids_array())
+        # tf_runner.set_input_tensor("input_mask:0", squad.get_attention_mask_array())
+        # tf_runner.set_input_tensor("segment_ids:0", squad.get_token_type_ids_array())
 
-        for i in range(batch_size):
-            answer_start_id, answer_end_id = np.argmax(output["logits:0"][i], axis=0)
-            squad.submit_prediction(
-                i,
-                squad.extract_answer(i, answer_start_id, answer_end_id)
-            )
+        output = onnx_runner.run(['unstack:0', 'unstack:1'])
+
+        # for i in range(batch_size):
+        #     answer_start_id, answer_end_id = np.argmax(output["logits:0"][i], axis=0)
+        #     squad.submit_prediction(
+        #         i,
+        #         squad.extract_answer(i, answer_start_id, answer_end_id)
+        #     )
 
         # # preprocess input
         # predict_file = '/onspecta/Downloads/dev-v1.1.json'

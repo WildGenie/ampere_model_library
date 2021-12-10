@@ -552,7 +552,8 @@ def main():
     for idx in range(0, n, bs):
         data = {"input_ids:0": input_ids[idx:idx + bs],
                 "input_mask:0": input_mask[idx:idx + bs],
-                "segment_ids:0": segment_ids[idx:idx + bs]}
+                "segment_ids:0": segment_ids[idx:idx + bs],
+                "unique_ids_raw_output___9:0": np.random.randint(28, size=10)}
         result = sess.run(["unstack:0", "unstack:1"], data)
         in_batch = result[0].shape[1]
         for i in range(0, in_batch):
