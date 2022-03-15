@@ -73,7 +73,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
         # print(type(torch.from_numpy(squad.get_input_ids_array())))
         # quit()
-        output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()))
+        output = pytorch_runner.run(torch.from_numpy(np.array(squad.get_input_ids_array(), dtype=np.int32)))
 
         for i in range(batch_size):
             answer_start_id = np.argmax(output.start_logits[i])
