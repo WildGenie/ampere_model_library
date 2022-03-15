@@ -105,7 +105,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
     print('here 8')
 
-    runner = PyTorchRunner(AutoModelForQuestionAnswering.from_pretrained(model_name))
+    runner = PyTorchRunner(AutoModelForQuestionAnswering.from_pretrained(model_name), disable_jit_freeze=True)
 
     print('here 9')
     # runner.model = tf.function(AutoModelForQuestionAnswering.from_pretrained(model_name))
