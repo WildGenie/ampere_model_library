@@ -3,11 +3,12 @@ import argparse
 import numpy as np
 import tensorflow as tf
 
-from utils.tf import TFSavedModelRunner, PyTorchRunner
 from utils.benchmark import run_model
-from transformers import AutoTokenizer, TFAutoModelForQuestionAnswering, AutoModelForQuestionAnswering
 from utils.nlp.squad import Squad_v1_1
+from utils.pytorch import PyTorchRunner
+from utils.tf import TFSavedModelRunner
 from utils.misc import print_goodbye_message_and_die
+from transformers import AutoTokenizer, TFAutoModelForQuestionAnswering, AutoModelForQuestionAnswering
 
 
 def parse_args():
