@@ -14,7 +14,6 @@ class PyTorchRunner:
 
     def __init__(self, model, disable_jit_freeze=False):
 
-        print('pytorch 1')
         torch.set_num_threads(bench_utils.get_intra_op_parallelism_threads())
         self.__model = model
         self.__model.eval()
@@ -37,16 +36,15 @@ class PyTorchRunner:
         and finally returning the output.
         :return: dict, output dictionary with tensor names and corresponding output
         """
-        print('pytorch 2')
+
         def runner_func(model):
-            print('pytorch 4')
             if isinstance(input, tuple):
                 start = time.time()
                 output = model(*input)
                 finish = time.time()
             else:
                 start = time.time()
-                output = model(torch.from_numpy(input))
+                output = model(input)
                 finish = time.time()
 
             self.__total_inference_time += finish - start
@@ -60,7 +58,6 @@ class PyTorchRunner:
             return output
 
         with torch.no_grad():
-            print('pytorch 3')
             if self.__frozen_script is None:
                 output_tensor = runner_func(self.__model)
             else:
