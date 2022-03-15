@@ -2,6 +2,7 @@ import argparse
 
 import numpy as np
 import tensorflow as tf
+import torch
 
 from utils.benchmark import run_model
 from utils.nlp.squad import Squad_v1_1
