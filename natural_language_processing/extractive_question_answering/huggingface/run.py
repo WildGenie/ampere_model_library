@@ -67,9 +67,15 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
 
 def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
 
+    print('here 1')
+
     def run_single_pass(pytorch_runner, squad):
 
+        print('here 2')
+
         output = pytorch_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
+
+        print('here 3')
 
         for i in range(batch_size):
             answer_start_id = np.argmax(output.start_logits[i])
@@ -79,16 +85,29 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
                 squad.extract_answer(i, answer_start_id, answer_end_id)
             )
 
+    print('here 4')
+
     tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+    print('here 5')
 
     def tokenize(question, text):
         return tokenizer(question, text, add_special_tokens=True)
 
+    print('here 6')
+
     def detokenize(answer):
         return tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(answer))
 
+    print('here 7')
+
     dataset = Squad_v1_1(batch_size, tokenize, detokenize, dataset_path=squad_path)
+
+    print('here 8')
+
     runner = PyTorchRunner(AutoModelForQuestionAnswering.from_pretrained(model_name))
+
+    print('here 9')
     # runner.model = tf.function(AutoModelForQuestionAnswering.from_pretrained(model_name))
 
     return run_model(run_single_pass, runner, dataset, batch_size, num_runs, timeout)
