@@ -46,7 +46,7 @@ class PyTorchRunner:
                 finish = time.time()
             else:
                 start = time.time()
-                output = model.generate(torch.from_numpy(input))
+                output = model(torch.from_numpy(input))
                 finish = time.time()
 
             self.__total_inference_time += finish - start
