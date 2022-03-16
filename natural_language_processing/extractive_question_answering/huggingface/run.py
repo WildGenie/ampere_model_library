@@ -74,9 +74,9 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
     def run_single_pass(pytorch_runner, squad):
 
-        print(np.array(squad.get_input_ids_array(), dtype=np.int32))
-        print(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
-        quit()
+        # print(np.array(squad.get_input_ids_array(), dtype=np.int32))
+        # print(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
+        # quit()
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
         for i in range(batch_size):
