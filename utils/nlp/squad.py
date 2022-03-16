@@ -1,10 +1,13 @@
-import numpy as np
-import json
 import re
+import json
 import string
-from collections import Counter
 import pathlib
+from collections import Counter
+
+import numpy as np
+
 import utils.misc as utils
+from utils.misc import print_goodbye_message_and_die
 
 
 class Squad_v1_1:
