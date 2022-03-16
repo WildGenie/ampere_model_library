@@ -92,7 +92,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
                 squad.extract_answer(i, answer_start_id, answer_end_id)
             )
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
 
     def tokenize(question, text):
         return tokenizer(question, text, add_special_tokens=False)
