@@ -46,6 +46,13 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
         for i in range(batch_size):
             answer_start_id = np.argmax(output.start_logits[i])
             answer_end_id = np.argmax(output.end_logits[i])
+
+            print(answer_start_id)
+            print(type(answer_start_id))
+            print(answer_end_id)
+            print(type(answer_end_id))
+
+            quit()
             squad.submit_prediction(
                 i,
                 squad.extract_answer(i, answer_start_id, answer_end_id)
