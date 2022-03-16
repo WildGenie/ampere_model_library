@@ -34,6 +34,7 @@ class PyTorchRunner:
         """
         A function assigning values to input tensor, executing single pass over the network, measuring the time needed
         and finally returning the output.
+
         :return: dict, output dictionary with tensor names and corresponding output
         """
 

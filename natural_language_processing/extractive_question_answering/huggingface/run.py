@@ -41,16 +41,13 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
 
     def run_single_pass(tf_runner, squad):
 
+        print(np.array(squad.get_input_ids_array(), dtype=np.int32))
+        quit()
         output = tf_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
 
         for i in range(batch_size):
             answer_start_id = np.argmax(output.start_logits[i])
             answer_end_id = np.argmax(output.end_logits[i])
-
-            print(answer_start_id)
-            print(type(answer_start_id))
-            print(answer_end_id)
-            print(type(answer_end_id))
 
             quit()
             squad.submit_prediction(
@@ -77,38 +74,18 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
     def run_single_pass(pytorch_runner, squad):
 
-        # print(squad.get_input_ids_array())
-        # print(type(squad.get_input_ids_array()))
-        # quit()
-        #
-        # print(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
-        # print(type(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32)))
-        # quit()
-
+        print(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
+        quit()
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
         for i in range(batch_size):
-            # print(output.start_logits[i])
-            # print(type(output.start_logits[i]))
-            # print(output.end_logits[i])
-            # print(type(output.end_logits[i]))
 
-            # quit()
             answer_start_id = np.argmax(output.start_logits[i]).item()
             answer_end_id = np.argmax(output.end_logits[i]).item()
-
-            # print(answer_start_id)
-            # print(type(answer_start_id))
-            # print(answer_end_id)
-            # print(type(answer_end_id))
 
             test = np.int64(answer_start_id)
             test1 = np.int64(answer_end_id)
 
-            # print(type(test))
-            # print(type(test1))
-
-            # quit()
             squad.submit_prediction(
                 i,
                 squad.extract_answer(i, test, test1)
