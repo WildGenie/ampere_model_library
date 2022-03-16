@@ -95,8 +95,8 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
 
     def tokenize(question, text):
-        return tokenizer(question, text, add_special_tokens=False, truncation="only_second", max_length=384, stride=128,
-                         return_overflowing_tokens=True, return_offsets_mapping=True,)
+        return tokenizer(question, text, add_special_tokens=False, max_length=384, stride=128,
+                         return_overflowing_tokens=True, return_offsets_mapping=True)
 
     def detokenize(answer):
         return tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(answer))
