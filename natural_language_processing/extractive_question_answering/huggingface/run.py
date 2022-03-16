@@ -102,10 +102,16 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
             print(answer_end_id)
             print(type(answer_end_id))
 
+            test = numpy.int64(answer_start_id)
+            test1 = numpy.int64(answer_end_id)
+
+            print(test)
+            print(test1)
+
             quit()
             squad.submit_prediction(
                 i,
-                squad.extract_answer(i, answer_start_id, answer_end_id)
+                squad.extract_answer(i, test, test1)
             )
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
