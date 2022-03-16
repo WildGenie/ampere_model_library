@@ -43,6 +43,9 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
 
         output = tf_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
 
+        print(output)
+        quit()
+
         for i in range(batch_size):
             answer_start_id = np.argmax(output.start_logits[i])
             answer_end_id = np.argmax(output.end_logits[i])
@@ -72,6 +75,9 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
     def run_single_pass(pytorch_runner, squad):
 
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
+
+        print(output)
+        quit()
 
         for i in range(batch_size):
 
