@@ -88,27 +88,27 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
         for i in range(batch_size):
-            print(output.start_logits[i])
-            print(type(output.start_logits[i]))
-            print(output.end_logits[i])
-            print(type(output.end_logits[i]))
+            # print(output.start_logits[i])
+            # print(type(output.start_logits[i]))
+            # print(output.end_logits[i])
+            # print(type(output.end_logits[i]))
 
             # quit()
             answer_start_id = np.argmax(output.start_logits[i]).item()
             answer_end_id = np.argmax(output.end_logits[i]).item()
 
-            print(answer_start_id)
-            print(type(answer_start_id))
-            print(answer_end_id)
-            print(type(answer_end_id))
+            # print(answer_start_id)
+            # print(type(answer_start_id))
+            # print(answer_end_id)
+            # print(type(answer_end_id))
 
             test = np.int64(answer_start_id)
             test1 = np.int64(answer_end_id)
 
-            print(type(test))
-            print(type(test1))
+            # print(type(test))
+            # print(type(test1))
 
-            quit()
+            # quit()
             squad.submit_prediction(
                 i,
                 squad.extract_answer(i, test, test1)
