@@ -41,8 +41,6 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
 
     def run_single_pass(tf_runner, squad):
 
-        print(np.array(squad.get_input_ids_array(), dtype=np.int32))
-        quit()
         output = tf_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
 
         for i in range(batch_size):
@@ -74,9 +72,6 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
     def run_single_pass(pytorch_runner, squad):
 
-        # print(np.array(squad.get_input_ids_array(), dtype=np.int32))
-        # print(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
-        # quit()
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
         for i in range(batch_size):
@@ -84,12 +79,12 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
             answer_start_id = np.argmax(output.start_logits[i]).item()
             answer_end_id = np.argmax(output.end_logits[i]).item()
 
-            test = np.int64(answer_start_id)
-            test1 = np.int64(answer_end_id)
+            # test = np.int64(answer_start_id)
+            # test1 = np.int64(answer_end_id)
 
             squad.submit_prediction(
                 i,
-                squad.extract_answer(i, test, test1)
+                squad.extract_answer(i, answer_start_id, answer_end_id)
             )
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
