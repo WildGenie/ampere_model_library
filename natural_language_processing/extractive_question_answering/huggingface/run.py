@@ -105,8 +105,8 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
             test = np.int64(answer_start_id)
             test1 = np.int64(answer_end_id)
 
-            print(test)
-            print(test1)
+            print(type(test))
+            print(type(test1))
 
             quit()
             squad.submit_prediction(
