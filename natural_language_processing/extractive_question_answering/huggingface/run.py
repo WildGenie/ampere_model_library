@@ -76,8 +76,8 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
-        print(output)
-        quit()
+        # print(output)
+        # quit()
 
         for i in range(batch_size):
 
@@ -95,7 +95,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     def tokenize(question, text):
-        return tokenizer(question, text, add_special_tokens=True)
+        return tokenizer(question, text, add_special_tokens=False)
 
     def detokenize(answer):
         return tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(answer))
