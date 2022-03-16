@@ -78,7 +78,9 @@ class Squad_v1_1:
 
     def __load_next_inputs_maybe(self):
         """
-        A function that loads new examples in the quantity equal to the requested batch size under the condition that
+        A function that loads new examples.
+
+        A function loads new examples in the quantity equal to the requested batch size under the condition that
         previously issued questions have already been answered.
         """
         if self.__unanswered_questions_count == 0:
@@ -100,8 +102,8 @@ class Squad_v1_1:
     def __get_input_array(self, input_name: string):
         """
         A function filling numpy arrays of proper batch size with examples.
-        Padding is applied if requested / necessary.
-        Cropping is applied when necessary.
+
+        Padding is applied if requested / necessary. Cropping is applied when necessary.
 
         :param input_name: str, input name as used by tokenization function
         :return: numpy array with raw/padded/cropped input
