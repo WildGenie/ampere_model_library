@@ -86,9 +86,14 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
             print(output.end_logits[i])
             print(type(output.end_logits[i]))
 
-            quit()
+            # quit()
             answer_start_id = np.argmax(output.start_logits[i])
             answer_end_id = np.argmax(output.end_logits[i])
+
+            print(answer_start_id)
+            print(answer_end_id)
+
+            quit()
             squad.submit_prediction(
                 i,
                 squad.extract_answer(i, answer_start_id, answer_end_id)
