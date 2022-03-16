@@ -81,9 +81,9 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
         # print(type(squad.get_input_ids_array()))
         # quit()
         #
-        print(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
+        # print(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
         # print(type(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32)))
-        quit()
+        # quit()
 
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
