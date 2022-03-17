@@ -16,10 +16,11 @@ class PyTorchRunner:
 
         torch.set_num_threads(bench_utils.get_intra_op_parallelism_threads())
         self.__model = model
-        self.__model.eval()
+        # self.__model.eval()
         self.__frozen_script = None
         if not disable_jit_freeze:
-            self.__frozen_script = torch.jit.freeze(torch.jit.script(self.__model))
+            pass
+            # self.__frozen_script = torch.jit.freeze(torch.jit.script(self.__model))
 
         self.__warm_up_run_latency = 0.0
         self.__total_inference_time = 0.0
