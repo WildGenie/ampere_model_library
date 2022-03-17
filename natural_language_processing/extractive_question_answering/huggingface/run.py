@@ -99,6 +99,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
             print(output.start_logits[i])
             print(output.end_logits[i])
+            print('*' * 100)
 
             # answer_start_id = np.int64(np.argmax(output.start_logits[i]).item())
             # answer_end_id = np.int64(np.argmax(output.end_logits[i]).item())
