@@ -81,6 +81,8 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
     def run_single_pass(pytorch_runner, squad):
 
+        print(squad.get_input_ids_array())
+
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
         # max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
@@ -97,8 +99,8 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
             # answer_start_id = np.int64(torch.max(output.start_logits[i]).item())
             # answer_end_id = np.int64(torch.max(output.end_logits[i]).item())
 
-            print(output.start_logits[i])
-            print(output.end_logits[i])
+            # print(output.start_logits[i])
+            # print(output.end_logits[i])
             print('*' * 100)
 
             # answer_start_id = np.int64(np.argmax(output.start_logits[i]).item())
