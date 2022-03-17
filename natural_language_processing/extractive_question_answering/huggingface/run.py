@@ -41,27 +41,30 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
 
     def run_single_pass(tf_runner, squad):
 
-        print(squad.get_input_ids_array())
+        # print(squad.get_input_ids_array())
 
         output = tf_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
 
-        print(output)
-        print('*' * 50)
-        print(output.start_logits)
-        print('*' * 50)
-        print(type(np.argmax(output.start_logits)))
+        # print(output)
+        # print('*' * 50)
+        # print(output.start_logits)
+        # print('*' * 50)
+        # print(type(np.argmax(output.start_logits)))
 
         for i in range(batch_size):
-            answer_start_id = np.argmax(output.start_logits[i])
-            answer_end_id = np.argmax(output.end_logits[i])
+            print(output.start_logits[i])
+            print(output.end_logits[i])
 
-            print(answer_start_id)
-            print(answer_end_id)
+            # answer_start_id = np.argmax(output.start_logits[i])
+            # answer_end_id = np.argmax(output.end_logits[i])
 
-            squad.submit_prediction(
-                i,
-                squad.extract_answer(i, answer_start_id, answer_end_id)
-            )
+            # print(answer_start_id)
+            # print(answer_end_id)
+            #
+            # squad.submit_prediction(
+            #     i,
+            #     squad.extract_answer(i, answer_start_id, answer_end_id)
+            # )
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
