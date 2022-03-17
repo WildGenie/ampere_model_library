@@ -94,7 +94,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
                 squad.extract_answer(i, answer_start_id, answer_end_id)
             )
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+    # tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
 
     # print(tokenizer.model_max_length)
     # quit()
@@ -131,7 +131,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
         return tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(answer))
 
     dataset = Squad_v1_1(batch_size, tokenize, detokenize, dataset_path=squad_path)
-    runner = PyTorchRunner(AutoModelForQuestionAnswering.from_pretrained(model_name), disable_jit_freeze=True)
+    runner = PyTorchRunner(model, disable_jit_freeze=True)
 
     return run_model(run_single_pass, runner, dataset, batch_size, num_runs, timeout)
 
