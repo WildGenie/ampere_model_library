@@ -51,6 +51,7 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
         # print('*' * 50)
         # print(type(np.argmax(output.start_logits)))
 
+        count = 0
         for i in range(batch_size):
             print("-" * 100)
             print(np.argmax(output.start_logits[i]))
@@ -60,6 +61,9 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
             answer_start_id = np.argmax(output.start_logits[i])
             answer_end_id = np.argmax(output.end_logits[i])
 
+            count += 1
+
+
             # print(answer_start_id)
             # print(answer_end_id)
             #
@@ -67,6 +71,9 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
                 i,
                 squad.extract_answer(i, answer_start_id, answer_end_id)
             )
+
+        if count == 4:
+            quit()
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
 
