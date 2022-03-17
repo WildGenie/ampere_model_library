@@ -43,16 +43,19 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
 
         output = tf_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
 
-        print(output)
-        print('*' * 50)
-        print(output.start_logits)
-        print('*' * 50)
-        print(type(np.argmax(output.start_logits)))
-        quit()
+        # print(output)
+        # print('*' * 50)
+        # print(output.start_logits)
+        # print('*' * 50)
+        # print(type(np.argmax(output.start_logits)))
+        # quit()
 
         for i in range(batch_size):
             answer_start_id = np.argmax(output.start_logits[i])
             answer_end_id = np.argmax(output.end_logits[i])
+
+            print(answer_start_id)
+            print(answer_end_id)
 
             squad.submit_prediction(
                 i,
