@@ -112,7 +112,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
             #     squad.extract_answer(i, answer_start_id, answer_end_id)
             # )
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
 
     # print(tokenizer.model_max_length)
     # quit()
