@@ -41,6 +41,8 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
 
     def run_single_pass(tf_runner, squad):
 
+        print(squad.get_input_ids_array())
+
         output = tf_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
 
         # print(output)
