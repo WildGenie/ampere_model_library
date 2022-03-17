@@ -162,9 +162,9 @@ class Squad_v1_1:
         :return: string, detokenized answer
         """
 
-        print(self.__current_inputs["input_ids"])
-        print(self.__current_inputs["input_ids"][id_in_batch][answer_start_id:answer_end_id + 1])
-        quit()
+        # print(self.__current_inputs["input_ids"])
+        # print(self.__current_inputs["input_ids"][id_in_batch][answer_start_id:answer_end_id + 1])
+        # quit()
         answer = self.__current_inputs["input_ids"][id_in_batch][answer_start_id:answer_end_id+1]
         return self.__detokenize_func(answer)
 
