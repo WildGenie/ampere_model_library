@@ -100,7 +100,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
     # quit()
 
     def tokenize(question, text):
-        return tokenizer(question, text, add_special_tokens=True, max_length=tokenizer.model_max_length, stride=128,
+        return tokenizer(question, text, add_special_tokens=True, max_length=tokenizer.model_max_length, stride=50,
                          return_overflowing_tokens=True, return_offsets_mapping=True, truncation="only_second",
                          padding=False)
 
