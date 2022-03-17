@@ -82,6 +82,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
         print('*' * 50)
         print(output.start_logits)
         print('*' * 50)
+        print(np.argmax(output.start_logits))
         quit()
 
         for i in range(batch_size):
