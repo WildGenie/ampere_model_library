@@ -78,13 +78,15 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
         # max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
 
-        # print(output)
-        # quit()
+        print(output)
+        print('*' * 50)
+        print(output.start_logits)
+        print('*' * 50)
 
         for i in range(batch_size):
 
-            answer_start_id = np.argmax(output.start_logits[i]).item()
-            answer_end_id = np.argmax(output.end_logits[i]).item()
+            answer_start_id = np.argmax(output.start_logits[i])
+            answer_end_id = np.argmax(output.end_logits[i])
 
             # test = np.int64(answer_start_id)
             # test1 = np.int64(answer_end_id)
