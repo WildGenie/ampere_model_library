@@ -9,7 +9,7 @@ from utils.nlp.squad import Squad_v1_1
 from utils.pytorch import PyTorchRunner
 from utils.tf import TFSavedModelRunner
 from utils.misc import print_goodbye_message_and_die
-from transformers import AutoTokenizer, TFAutoModelForQuestionAnswering, AutoModelForQuestionAnswering
+from transformers import AutoTokenizer, TFAutoModelForQuestionAnswering, AutoModelForQuestionAnswering, AutoConfig
 
 
 def parse_args():
@@ -99,10 +99,33 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
     # print(tokenizer.model_max_length)
     # quit()
 
+    config = AutoConfig.from_pretrained(
+        model_name,
+        cache_dir=None,
+        revision='main',
+        use_auth_token=None,
+    )
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name,
+        cache_dir=None,
+        use_fast=True,
+        revision='main',
+        use_auth_token=None,
+    )
+
+    model = AutoModelForQuestionAnswering.from_pretrained(
+        model_name,
+        from_tf=False,
+        config=config,
+        cache_dir=None,
+        revision='main',
+        use_auth_token=None,
+    )
+
     def tokenize(question, text):
-        return tokenizer(question, text, add_special_tokens=True, max_length=tokenizer.model_max_length, stride=50,
-                         return_overflowing_tokens=True, return_offsets_mapping=True, truncation="only_second",
-                         padding=False)
+        return tokenizer(question, text, max_length=384, stride=128, return_overflowing_tokens=True,
+                         return_offsets_mapping=True, truncation="only_second", padding="max_length")
 
     def detokenize(answer):
         return tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(answer))
