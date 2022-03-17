@@ -82,9 +82,13 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
     def run_single_pass(pytorch_runner, squad):
 
-        print(squad.get_input_ids_array())
+        # print(squad.get_input_ids_array())
+        # print(torch.from_numpy(squad.get_input_ids_array()))
+        # quit()
 
-        output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
+        # output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
+
+        output = pytorch_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
 
         # max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
 
