@@ -52,8 +52,8 @@ def run_tf(model_name, batch_size, num_runs, timeout, squad_path, **kwargs):
         # print(type(np.argmax(output.start_logits)))
 
         for i in range(batch_size):
-            print(output.start_logits[i])
-            print(output.end_logits[i])
+            print(np.argmax(output.start_logits[i]))
+            print(np.argmax(output.end_logits[i]))
 
             # answer_start_id = np.argmax(output.start_logits[i])
             # answer_end_id = np.argmax(output.end_logits[i])
