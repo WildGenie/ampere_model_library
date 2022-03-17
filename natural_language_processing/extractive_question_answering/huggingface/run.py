@@ -117,12 +117,12 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
     # print(tokenizer.model_max_length)
     # quit()
 
-    config = AutoConfig.from_pretrained(
-        model_name,
-        cache_dir=None,
-        revision='main',
-        use_auth_token=None,
-    )
+    # config = AutoConfig.from_pretrained(
+    #     model_name,
+    #     cache_dir=None,
+    #     revision='main',
+    #     use_auth_token=None,
+    # )
 
     # tokenizer = AutoTokenizer.from_pretrained(
     #     model_name,
@@ -132,13 +132,17 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
     #     use_auth_token=None,
     # )
 
+    # model = AutoModelForQuestionAnswering.from_pretrained(
+    #     model_name,
+    #     from_tf=False,
+    #     config=config,
+    #     cache_dir=None,
+    #     revision='main',
+    #     use_auth_token=None,
+    # )
+
     model = AutoModelForQuestionAnswering.from_pretrained(
-        model_name,
-        from_tf=False,
-        config=config,
-        cache_dir=None,
-        revision='main',
-        use_auth_token=None,
+        model_name
     )
 
     def tokenize(question, text):
