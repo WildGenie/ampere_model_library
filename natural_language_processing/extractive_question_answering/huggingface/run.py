@@ -97,8 +97,8 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
             answer_start_id = np.int64(np.argmax(output.start_logits[i]).item())
             answer_end_id = np.int64(np.argmax(output.end_logits[i]).item())
 
-            # test = np.int64(answer_start_id)
-            # test1 = np.int64(answer_end_id)
+            print(answer_start_id)
+            print(answer_end_id)
 
             squad.submit_prediction(
                 i,
