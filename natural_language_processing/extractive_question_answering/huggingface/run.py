@@ -76,6 +76,8 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
+        # max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
+
         # print(output)
         # quit()
 
@@ -93,6 +95,9 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
             )
 
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
+
+    print(tokenizer.model_max_length)
+    quit()
 
     def tokenize(question, text):
         return tokenizer(question, text, add_special_tokens=True, max_length=384, stride=128,
