@@ -86,9 +86,9 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
         # print(torch.from_numpy(squad.get_input_ids_array()))
         # quit()
 
-        # output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
+        output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
-        output = pytorch_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
+        # output = pytorch_runner.run(np.array(squad.get_input_ids_array(), dtype=np.int32))
 
         # max_seq_length = min(data_args.max_seq_length, tokenizer.model_max_length)
 
@@ -100,6 +100,9 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
         # quit()
 
         for i in range(batch_size):
+
+            print(output.start_logits[i])
+            print(output.end_logits[i])
 
             # answer_start_id = np.int64(torch.max(output.start_logits[i]).item())
             # answer_end_id = np.int64(torch.max(output.end_logits[i]).item())
