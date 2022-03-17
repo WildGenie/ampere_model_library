@@ -86,7 +86,7 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
         print('*' * 50)
         print(output.start_logits)
         print('*' * 50)
-        print(type(torch.max(output.start_logits[i]).item()))
+        print(type(torch.max(output.start_logits).item()))
         quit()
 
         for i in range(batch_size):
