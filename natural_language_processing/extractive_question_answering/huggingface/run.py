@@ -70,6 +70,10 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 
     def run_single_pass(pytorch_runner, squad):
 
+        print(squad.get_input_ids_array())
+        print(type(squad.get_input_ids_array()))
+        quit()
+
         output = pytorch_runner.run(torch.from_numpy(squad.get_input_ids_array()).type(torch.int32))
 
         for i in range(batch_size):
