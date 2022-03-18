@@ -97,9 +97,6 @@ class Squad_v1_1:
                 self.__questions_count += 1
                 self.__unanswered_questions_count += 1
                 self.__valid_answers.append(correct_answers)
-                print(context)
-                print(question)
-                print("888" * 100)
             self.__current_inputs = self.__tokenize_func(questions, contextes)
 
     def __get_input_array(self, input_name: string):
@@ -113,8 +110,6 @@ class Squad_v1_1:
         """
         self.__load_next_inputs_maybe()
         input = self.__current_inputs[input_name]
-        print(input)
-        print("7" * 100)
 
         # if seq size has not been specified the target one will be set to the size of the longest sequence in a batch
         if self.__target_seq_size is None:
