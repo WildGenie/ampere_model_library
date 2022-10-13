@@ -2,7 +2,6 @@
 # Copyright (c) 2022, Ampere Computing LLC
 
 import numpy as np
-import torch
 import utils.misc as utils
 
 

@@ -168,7 +168,7 @@ class TFSavedModelRunner:
         :return: dict, output dictionary with tensor names and corresponding output
         """
         start = time.time()
-        output = self.model(input)
+        output = self.model(**input)
         finish = time.time()
 
         self.__start_times.append(start)
