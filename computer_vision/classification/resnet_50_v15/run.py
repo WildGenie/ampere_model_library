@@ -142,7 +142,9 @@ def main():
             run_tflite_int8(**vars(args))
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+
 
     elif args.framework == "ort":
         if args.model_path is None:
@@ -153,11 +155,14 @@ def main():
             run_ort_fp16(**vars(args))
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+
 
     else:
         print_goodbye_message_and_die(
-            "this model seems to be unsupported in a specified framework: " + args.framework)
+            f"this model seems to be unsupported in a specified framework: {args.framework}"
+        )
 
 
 if __name__ == "__main__":

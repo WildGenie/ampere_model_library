@@ -72,8 +72,7 @@ def pre_process_ssd_2(input_array, order: str):
         mean = mean.reshape((1, 3, 1, 1))
 
     input_array /= 255.0
-    input_array = (input_array - mean) / std
-    return input_array
+    return (input_array - mean) / std
 
 
 def pre_process_yolo(input_array):
@@ -185,9 +184,7 @@ def pre_process_py(input_array):
     input_array /= 255.0
     input_array = (input_array - per_channel_means) / std
 
-    input_array = input_array.astype("float32")
-
-    return input_array
+    return input_array.astype("float32")
 
 
 def pre_process_py_objdet(input_array):

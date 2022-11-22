@@ -13,10 +13,7 @@ def aio_profiler_enabled():
 
     :return: boolean
     """
-    if "AIO_PROFILER" in os.environ and os.environ["AIO_PROFILER"] == "1":
-        return True
-    else:
-        return False
+    return "AIO_PROFILER" in os.environ and os.environ["AIO_PROFILER"] == "1"
 
 
 def set_profile_path(model_name):

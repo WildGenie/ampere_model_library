@@ -71,24 +71,25 @@ class CNN_DailyMail:
         A function that loads new examples in the quantity equal to the requested batch size under the condition that
         previously issued questions have already been answered.
         """
-        if self.__unsubmitted_count == 0:
-            texts = list()
-            self.__summaries = list()
-            examples_needed = self.__batch_size
-            while examples_needed > 0:
-                try:
-                    text, summary = next(self.__example_iterator)
-                except StopIteration:
-                    raise utils.OutOfInstances("No more examples to process in the CNN/DailyMail directory provided.")
-                tokenized = self.__tokenize_func(text)
-                if len(tokenized["input_ids"]) > 1024:
-                    continue
-                examples_needed -= 1
-                texts.append(text)
-                self.__summaries.append(summary)
-                self.__texts_count += 1
-                self.__unsubmitted_count += 1
-            self.__current_inputs = self.__tokenize_func(texts)
+        if self.__unsubmitted_count != 0:
+            return
+        texts = []
+        self.__summaries = []
+        examples_needed = self.__batch_size
+        while examples_needed > 0:
+            try:
+                text, summary = next(self.__example_iterator)
+            except StopIteration:
+                raise utils.OutOfInstances("No more examples to process in the CNN/DailyMail directory provided.")
+            tokenized = self.__tokenize_func(text)
+            if len(tokenized["input_ids"]) > 1024:
+                continue
+            examples_needed -= 1
+            texts.append(text)
+            self.__summaries.append(summary)
+            self.__texts_count += 1
+            self.__unsubmitted_count += 1
+        self.__current_inputs = self.__tokenize_func(texts)
             
 
     def __get_input_array(self, input_name: string):
@@ -122,7 +123,7 @@ class CNN_DailyMail:
             else:
                 # cropping is applied if otherwise
                 # TODO: this should actually be caused by exceeding max_seq_size, not target_seq_size
-                input_padded[i] = input[i][0:target_seq_size]
+                input_padded[i] = input[i][:target_seq_size]
 
         return input_padded
 
@@ -198,7 +199,7 @@ class CNN_DailyMail:
             recall = 1.0 * num_same / len(ground_truth_tokens)
             rouge2 = (2 * precision * recall) / (precision + recall)
             return rouge2
-        
+
         def get_bigrams(text):
             """
             A function splitting text into bigrams (a sequence of two adjacent words).
@@ -206,7 +207,7 @@ class CNN_DailyMail:
             :param text: str, text to split
             :return: list, a list of bigrams
             """
-            return [b for b in zip(text.split()[:-1], text.split()[1:])]
+            return list(zip(text.split()[:-1], text.split()[1:]))
 
         ground_truth = self.__summaries[id_in_batch]
         self.__rouge2_count += rouge2_score(normalize(summary), normalize(ground_truth))

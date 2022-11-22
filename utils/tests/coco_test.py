@@ -71,7 +71,7 @@ def run_reference(test_data_path, num_test_images=100):
     coco_gt = COCO(annotations_path)
     coco_dt = coco_gt.loadRes(test_data_path)
     img_ids = sorted(coco_gt.getImgIds())
-    img_ids = img_ids[0:num_test_images]
+    img_ids = img_ids[:num_test_images]
     coco_eval = COCOeval(coco_gt, coco_dt, "bbox")
     coco_eval.params.imgIds = img_ids
     coco_eval.evaluate()

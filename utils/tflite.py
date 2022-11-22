@@ -34,8 +34,8 @@ class TFLiteRunner:
         self.output_details = self.__interpreter.get_output_details()
 
         self.__times_invoked = 0
-        self.__start_times = list()
-        self.__finish_times = list()
+        self.__start_times = []
+        self.__finish_times = []
 
         print("\nRunning with TensorFlow Lite\n")
 

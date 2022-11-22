@@ -154,7 +154,7 @@ class Postprocessor:
                     clamp(round(self.bboxes[idx][1] * npimg.shape[1]), 0, npimg.shape[1]),
                     clamp(round(self.bboxes[idx][2] * npimg.shape[0]), 0, npimg.shape[0]),
                     clamp(round(self.bboxes[idx][3] * npimg.shape[1]), 0, npimg.shape[1])]
-                    
+
             height = bbox[2] - bbox[0]
             width = bbox[3] - bbox[1]
             bboxed_img = npimg[bbox[0]:bbox[2], bbox[1]:bbox[3]]
@@ -176,19 +176,20 @@ class Postprocessor:
                 cv2.circle(mask, center, 3, [128, 0, 128], thickness=3, lineType=8, shift=0)
 
             # draw line
-            lines = []
-            for pair in KEYPOINT_EDGE_INDS_TO_COLOR:
-                if human[0, pair[0], 2] < threshold or human[0, pair[1], 2] < threshold:
-                    continue
-                lines.append([centers[pair[0]], centers[pair[1]]])
-            
+            lines = [
+                [centers[pair[0]], centers[pair[1]]]
+                for pair in KEYPOINT_EDGE_INDS_TO_COLOR
+                if human[0, pair[0], 2] >= threshold
+                and human[0, pair[1], 2] >= threshold
+            ]
+
             left_point, right_point, radius_multiplier = None, None, 1.0
             if human[0, KEYPOINT_DICT['left_ear'], 2] > threshold:
                 left_point = human[0,  KEYPOINT_DICT['left_ear']]
             elif human[0, KEYPOINT_DICT['left_eye'], 2] > threshold:
                 left_point = human[0, KEYPOINT_DICT['left_eye']]
                 radius_multiplier *= 1.5
-            
+
             if human[0, KEYPOINT_DICT['right_ear'], 2] > threshold:
                 right_point = human[0, KEYPOINT_DICT['right_ear']]
             elif human[0, KEYPOINT_DICT['right_eye'], 2] > threshold:
@@ -199,10 +200,10 @@ class Postprocessor:
                 right_point = human[0, KEYPOINT_DICT['nose']]
             if right_point is not None and left_point is None and human[0, KEYPOINT_DICT['nose'], 2] > threshold:
                 left_point = human[0, KEYPOINT_DICT['nose']]
-            
+
             if left_point is not None and right_point is not None:
                 mask = self.mask_face(mask, left_point, right_point, radius_multiplier)
-            
+
             if not self.faces:
                 # Blur torso
                 if (human[0, KEYPOINT_DICT['left_shoulder'], 2] > threshold and
@@ -255,7 +256,7 @@ class Postprocessor:
                 cv2.polylines(mask, lines, False, (255, 255, 255), thickness)
         pose[mask>0] = mask[mask>0]
         npimg[mask>0] = img_blurred_bboxes[mask>0]
-        
+
         return npimg, pose # npimg - blurred, pose - skeleton drawn over the image
     
     def reset(self, pose_postprocessor_queue, postprocessor_writer_queue):

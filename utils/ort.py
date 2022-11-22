@@ -28,12 +28,12 @@ class OrtRunner:
 
         self.session = ort.InferenceSession(model, session_options, providers=ort.get_available_providers())
 
-        self.__feed_dict = dict()
+        self.__feed_dict = {}
         self.__output_names = [output.name for output in self.session.get_outputs()]
 
         self.__times_invoked = 0
-        self.__start_times = list()
-        self.__finish_times = list()
+        self.__start_times = []
+        self.__finish_times = []
 
         print("\nRunning with ONNX Runtime\n")
 

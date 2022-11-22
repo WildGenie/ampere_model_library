@@ -173,20 +173,24 @@ def main():
             run_tflite_int8(**vars(args))
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+
 
     elif args.framework == "pytorch":
         if args.precision == "fp32":
             run_pytorch_fp32(model_name="mobilenet_v2", **vars(args))
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
-  
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+
+
     elif args.framework == "ort":
         if args.model_path is None:
             print_goodbye_message_and_die(
                 "a path to model is unspecified!")
-            
+
         if args.precision == "fp32":
             run_ort_fp32(
                 args.model_path, args.batch_size, args.num_runs, args.timeout, args.images_path, args.labels_path
@@ -197,11 +201,14 @@ def main():
             )
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
-            
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+
+
     else:
         print_goodbye_message_and_die(
-            "this model seems to be unsupported in a specified framework: " + args.framework)
+            f"this model seems to be unsupported in a specified framework: {args.framework}"
+        )
 
 
 if __name__ == "__main__":

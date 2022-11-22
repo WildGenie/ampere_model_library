@@ -13,7 +13,7 @@ def initialize_colors(colors_to_generate=100):
     :param colors_to_generate: int, number of colors to generate
     :return: list of tuples equating to BGR-expressed colors
     """
-    colors_per_cat = list()
+    colors_per_cat = []
     np.random.seed(13)  # 13
     for _ in range(colors_to_generate):
         B = np.random.randint(0, 256)
@@ -72,11 +72,7 @@ def get_imagenet_names(ids_array):
     :return: strings with ImageNet category names
     """
     ids_list = ids_array.tolist()
-    if type(ids_list) is list:
-        string_with_names = ""
-        for id in ids_list:
-            string_with_names += imagenet_labels[id] + ", "
-        string_with_names = string_with_names[:-2]
-    else:
-        string_with_names = imagenet_labels[ids_list]
-    return string_with_names
+    if type(ids_list) is not list:
+        return imagenet_labels[ids_list]
+    string_with_names = "".join(f"{imagenet_labels[id]}, " for id in ids_list)
+    return string_with_names[:-2]

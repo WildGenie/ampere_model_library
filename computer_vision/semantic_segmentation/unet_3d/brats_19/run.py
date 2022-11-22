@@ -80,7 +80,7 @@ def run_pytorch_fp32(model_path, num_runs, timeout, dataset_path, **kwargs):
 
 
 def restore_model(checkpoint):
-    pkl_file = checkpoint + ".pkl"
+    pkl_file = f"{checkpoint}.pkl"
     with open(pkl_file, 'rb') as f:
         info = pickle.load(f)
     init = info['init']
@@ -109,17 +109,22 @@ def main():
             run_tf_fp16(**vars(args))
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+
     elif args.framework == "pytorch":
         if args.precision == "fp32":
             run_pytorch_fp32(**vars(args))
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)    
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+                
 
     else:
         print_goodbye_message_and_die(
-            "this model seems to be unsupported in a specified framework: " + args.framework)
+            f"this model seems to be unsupported in a specified framework: {args.framework}"
+        )
 
 
 if __name__ == "__main__":

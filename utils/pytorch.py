@@ -36,7 +36,7 @@ class PyTorchRunner:
                 utils.print_warning_message(
                     f"Running with disable_jit_freeze={disable_jit_freeze} - Ampere optimizations are not expected to work.")
         else:
-            cached_dir = Path(os.path.dirname(os.path.realpath(__file__)) + "/cached")
+            cached_dir = Path(f"{os.path.dirname(os.path.realpath(__file__))}/cached")
             cached_path = cached_dir / f"{self.__model._get_name()}_{hashlib.sha224(str(model).encode('utf-8')).hexdigest()}.pt"
             if cached_path.exists():
                 self.__frozen_script = torch.jit.load(cached_path)
@@ -54,8 +54,8 @@ class PyTorchRunner:
         self.__is_profiling = aio_profiler_enabled()
 
         self.__times_invoked = 0
-        self.__start_times = list()
-        self.__finish_times = list()
+        self.__start_times = []
+        self.__finish_times = []
 
         print("\nRunning with PyTorch\n")
 
@@ -87,10 +87,7 @@ class PyTorchRunner:
             return output
 
         with torch.no_grad():
-            if self.__frozen_script is None:
-                model = self.__model
-            else:
-                model = self.__frozen_script
+            model = self.__model if self.__frozen_script is None else self.__frozen_script
             if self.__func is not None:
                 model = getattr(model, self.__func)
 

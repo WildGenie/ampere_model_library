@@ -91,9 +91,12 @@ def run_pytorch(model_name, batch_size, num_runs, timeout, squad_path, disable_j
     model = AutoModelForQuestionAnswering.from_pretrained(model_name, torchscript=True)
     dataset = Squad_v1_1(batch_size, tokenize, detokenize, dataset_path=squad_path)
 
-    runner = PyTorchRunner(model,
-                           disable_jit_freeze=disable_jit_freeze,
-                           example_inputs=[val for val in dataset.get_input_arrays().values()])
+    runner = PyTorchRunner(
+        model,
+        disable_jit_freeze=disable_jit_freeze,
+        example_inputs=list(dataset.get_input_arrays().values()),
+    )
+
 
     return run_model(run_single_pass, runner, dataset, batch_size, num_runs, timeout)
 
@@ -113,7 +116,8 @@ def main():
         run_pytorch(**vars(args))
     else:
         print_goodbye_message_and_die(
-            "this model seems to be unsupported in a specified framework: " + args.framework)
+            f"this model seems to be unsupported in a specified framework: {args.framework}"
+        )
 
 
 if __name__ == "__main__":

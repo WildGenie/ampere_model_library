@@ -71,12 +71,13 @@ def run_tf_fp32(model_name, batch_size, num_runs, timeout, squad_path, **kwargs)
 def main():
     args = parse_args()
     download_squad_1_1_dataset()
-    
+
     if args.framework == "tf":
         run_tf(**vars(args))
     else:
         print_goodbye_message_and_die(
-            "this model seems to be unsupported in a specified framework: " + args.framework)
+            f"this model seems to be unsupported in a specified framework: {args.framework}"
+        )
 
 
 if __name__ == "__main__":

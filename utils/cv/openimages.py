@@ -47,15 +47,19 @@ class OpenImagesDataset(ObjectDetectionDataset):
         :return: list of strings
         """
 
-        images = {}
         with open(annotations_path, "r") as f:
             openimages = json.load(f)
-        for i in openimages["images"]:
-            images[i["id"]] = {"file_name": i["file_name"],
-                               "height": i["height"],
-                               "width": i["width"],
-                               "bbox": [],
-                               "category": []}
+        images = {
+            i["id"]: {
+                "file_name": i["file_name"],
+                "height": i["height"],
+                "width": i["width"],
+                "bbox": [],
+                "category": [],
+            }
+            for i in openimages["images"]
+        }
+
         for a in openimages["annotations"]:
             i = images.get(a["image_id"])
             if i is None:

@@ -183,6 +183,4 @@ class Joint(torch.nn.Module):
         g = g.expand((B, T, U_, H2))
 
         inp = torch.cat([f, g], dim=3)   # (B, T, U, 2H)
-        res = self.net(inp)
-        # del f, g, inp
-        return res
+        return self.net(inp)
