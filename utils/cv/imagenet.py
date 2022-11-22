@@ -55,8 +55,8 @@ class ImageNet(ImageDataset):
         boundary = 28  # single line of labels file looks like this "ILSVRC2012_val_00050000.JPEG 456"
         file = open(labels_path, "r")
         lines = file.readlines()
-        file_names = list()
-        labels = list()
+        file_names = []
+        labels = []
         for line in lines:
             file_name = line[:boundary]
             file_names.append(file_name)
@@ -118,8 +118,7 @@ class ImageNet(ImageDataset):
         """
         if output_array.ndim != 1:
             raise ValueError(f"Output array should be a 1-D array, not {output_array.ndim}-D")
-        top_1_index = np.argmax(output_array)
-        return top_1_index
+        return np.argmax(output_array)
 
     def extract_top5(self, output_array):
         """
@@ -130,8 +129,7 @@ class ImageNet(ImageDataset):
         """
         if output_array.ndim != 1:
             raise ValueError(f"Output array should be a 1-D array, not {output_array.ndim}-D")
-        top_5_indices = np.argpartition(output_array, -5)[-5:]
-        return top_5_indices
+        return np.argpartition(output_array, -5)[-5:]
 
     def submit_predictions(self, id_in_batch: int, top_1_index: int, top_5_indices: list):
         """

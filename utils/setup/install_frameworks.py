@@ -6,7 +6,7 @@ import sys
 import subprocess
 from packaging import version
 
-native_frameworks = list()
+native_frameworks = []
 
 # We skip installation of given framework if an Ampere-optimized version is already present. If it is not, then we
 # install the vanilla version (because we don't supply installation packages yet - go to
@@ -16,26 +16,32 @@ native_frameworks = list()
 try:
     import tensorflow as tf
 except ModuleNotFoundError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", f"tensorflow"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "tensorflow"])
     native_frameworks.append("TensorFlow")
 
 # ONNXRunTime
 try:
     import onnxruntime as ort
 except ModuleNotFoundError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", f"onnxruntime"])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "onnxruntime"])
     native_frameworks.append("ONNXRunTime")
 
 # PyTorch
 try:
     import torch
 except ModuleNotFoundError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", f"torch==1.12.1"])
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "torch==1.12.1"]
+    )
+
     native_frameworks.append("PyTorch")
 try:
     import torchvision
 except ModuleNotFoundError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", f"torchvision==0.13.1"])
+    subprocess.check_call(
+        [sys.executable, "-m", "pip", "install", "torchvision==0.13.1"]
+    )
+
 
 
 # summary

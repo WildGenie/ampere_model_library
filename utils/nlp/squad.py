@@ -81,21 +81,22 @@ class Squad_v1_1:
         A function that loads new examples in the quantity equal to the requested batch size under the condition that
         previously issued questions have already been answered.
         """
-        if self.__unanswered_questions_count == 0:
-            contextes = list()
-            questions = list()
-            self.__valid_answers = list()
-            for _ in range(self.__batch_size):
-                try:
-                    context, question, correct_answers = next(self.__example_iterator)
-                except StopIteration:
-                    raise utils.OutOfInstances("No more examples to process in the Squad file provided.")
-                contextes.append(context)
-                questions.append(question)
-                self.__questions_count += 1
-                self.__unanswered_questions_count += 1
-                self.__valid_answers.append(correct_answers)
-            self.__current_inputs = self.__tokenize_func(questions, contextes)
+        if self.__unanswered_questions_count != 0:
+            return
+        contextes = []
+        questions = []
+        self.__valid_answers = []
+        for _ in range(self.__batch_size):
+            try:
+                context, question, correct_answers = next(self.__example_iterator)
+            except StopIteration:
+                raise utils.OutOfInstances("No more examples to process in the Squad file provided.")
+            contextes.append(context)
+            questions.append(question)
+            self.__questions_count += 1
+            self.__unanswered_questions_count += 1
+            self.__valid_answers.append(correct_answers)
+        self.__current_inputs = self.__tokenize_func(questions, contextes)
 
     def __get_input_array(self, input_name: string):
         """
@@ -128,7 +129,7 @@ class Squad_v1_1:
             else:
                 # cropping is applied if otherwise
                 # TODO: this should actually be caused by exceeding max_seq_size, not target_seq_size
-                input_padded[i] = input[i][0:target_seq_size]
+                input_padded[i] = input[i][:target_seq_size]
 
         return input_padded
 

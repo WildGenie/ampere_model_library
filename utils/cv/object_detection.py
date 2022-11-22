@@ -16,11 +16,11 @@ class ObjectDetectionDataset(ImageDataset):
         self.__annotations_path = annotations_path
         self.__pre_processing = pre_processing
         self.__order = order
-        self.__detections = list()
-        self.__current_image_ratios = list()
+        self.__detections = []
+        self.__current_image_ratios = []
         self.__ground_truth = COCO(annotations_path)
         self._current_img = 0
-        self._current_image_ids = list()
+        self._current_image_ids = []
         self._image_ids = self.__ground_truth.getImgIds()
         if sort_ascending:
             self._image_ids = sorted(self._image_ids)
@@ -32,8 +32,8 @@ class ObjectDetectionDataset(ImageDataset):
         """
         A function resetting containers (lists) containing data on the on-going batch.
         """
-        self._current_image_ids = list()
-        self.__current_image_ratios = list()
+        self._current_image_ids = []
+        self.__current_image_ratios = []
     
 
     def __load_image_and_store_ratios(self, target_shape):
@@ -50,7 +50,7 @@ class ObjectDetectionDataset(ImageDataset):
 
     def reset(self):
         self._current_img = 0
-        self.__detections = list()
+        self.__detections = []
         return True
 
     def get_input_array(self, target_shape):
@@ -140,8 +140,7 @@ class ObjectDetectionDataset(ImageDataset):
         :param category: int, index of class / category in COCO order (starting with idx = 1)
         :return:
         """
-        instance = list()
-        instance.append(self._current_image_ids[id_in_batch])
+        instance = [self._current_image_ids[id_in_batch]]
         instance += self.rescale_bbox(id_in_batch, bbox)
         instance.append(score)
         instance.append(category)
@@ -154,7 +153,7 @@ class ObjectDetectionDataset(ImageDataset):
         """
         detections = self.__ground_truth.loadRes(np.array(self.__detections))
         coco_eval = COCOeval(self.__ground_truth, detections, "bbox")
-        coco_eval.params.imgIds = self._image_ids[0:self._current_img]
+        coco_eval.params.imgIds = self._image_ids[:self._current_img]
         coco_eval.evaluate()
         coco_eval.accumulate()
         coco_eval.summarize()

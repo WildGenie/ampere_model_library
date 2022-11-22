@@ -54,23 +54,24 @@ class CoNLL2003:
         A function that loads new examples in the quantity equal to the requested batch size under the condition that
         previously issued questions have already been answered.
         """
-        if self.__unsubmitted_count == 0:
-            texts = list()
-            self.__ner_tags = list()
-            examples_needed = self.__batch_size
-            while examples_needed > 0:
-                try:
-                    tokens, ner_tags = next(self.__example_iterator)
-                except StopIteration:
-                    raise utils.OutOfInstances("No more examples to process in the CoNLL-2003 file provided.")
+        if self.__unsubmitted_count != 0:
+            return
+        texts = []
+        self.__ner_tags = []
+        examples_needed = self.__batch_size
+        while examples_needed > 0:
+            try:
+                tokens, ner_tags = next(self.__example_iterator)
+            except StopIteration:
+                raise utils.OutOfInstances("No more examples to process in the CoNLL-2003 file provided.")
 
-                examples_needed -= 1
-                texts.append(tokens)
-                self.__ner_tags.append(ner_tags)
-                self.__texts_count += 1
-                self.__unsubmitted_count += 1
-            tokenized = self.__tokenize_func(texts)
-            self.__current_inputs = tokenized
+            examples_needed -= 1
+            texts.append(tokens)
+            self.__ner_tags.append(ner_tags)
+            self.__texts_count += 1
+            self.__unsubmitted_count += 1
+        tokenized = self.__tokenize_func(texts)
+        self.__current_inputs = tokenized
 
     def __get_input_array(self, input_name: string):
         """
@@ -102,7 +103,7 @@ class CoNLL2003:
             else:
                 # cropping is applied if otherwise
                 # TODO: this should actually be caused by exceeding max_seq_size, not target_seq_size
-                input_padded[i] = input[i][0:target_seq_size]
+                input_padded[i] = input[i][:target_seq_size]
 
         return input_padded
 

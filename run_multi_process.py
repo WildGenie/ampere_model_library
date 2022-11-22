@@ -42,14 +42,13 @@ def calculate_throughput(args, logs_dir, logs):
     with open(os.path.join(logs_dir, f"meta_{logs[0][:-4]}.json"), "r") as meta_file:
         batch_size = json.load(meta_file)["batch_size"]
 
-    runs = dict()
+    runs = {}
     latest_start = None
     earliest_finish = None
     for log in logs:
         with open(os.path.join(logs_dir, log), "r") as log_file:
             reader = csv.reader(log_file, delimiter=",")
-            i = 0
-            for row in reader:
+            for i, row in enumerate(reader):
                 if i == 0:
                     start_time = float(row[0])
                     if latest_start is None or latest_start < start_time:
@@ -62,10 +61,8 @@ def calculate_throughput(args, logs_dir, logs):
                     runs[log].append([float(time) for time in row])
                 else:
                     print_goodbye_message_and_die("Corrupted CSV files with results.")
-                i += 1
-
-    latencies = list()
-    for pid, run in runs.items():
+    latencies = []
+    for run in runs.values():
         observations = len(run[0])
         assert observations == len(run[1])
         inputs_processed = 0
@@ -119,7 +116,7 @@ def main():
         shutil.rmtree(results_dir)
     os.mkdir(results_dir)
 
-    current_subprocesses = list()
+    current_subprocesses = []
     for n in range(args.num_processes):
         aio_numa_cpus, physcpubind = gen_threads_config(args.num_threads, n)
         os.environ["AIO_NUMA_CPUS"] = aio_numa_cpus
@@ -133,7 +130,7 @@ def main():
                 cmd, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb')))
 
     exit_codes = [p.wait() for p in current_subprocesses]
-    if not all(exit_code == 0 for exit_code in exit_codes):
+    if any(exit_code != 0 for exit_code in exit_codes):
         print(exit_codes)
         print_goodbye_message_and_die("At least one of subprocesses returned exit code 1!")
 

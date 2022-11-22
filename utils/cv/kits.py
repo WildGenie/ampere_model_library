@@ -119,14 +119,14 @@ class KiTS19:
             self.__full_image = np.expand_dims(image, axis=0).astype("float32")
             self.all_issued = False
             self.empty = False
-            self.__slice_indices = list()
+            self.__slice_indices = []
             self.__current_slice_id = 0
 
             assert len(ROI_SHAPE) == 3 and any(ROI_SHAPE) and all(dim > 0 for dim in ROI_SHAPE), \
-                f"Need proper ROI shape! The current ROI shape is: {ROI_SHAPE}"
+                        f"Need proper ROI shape! The current ROI shape is: {ROI_SHAPE}"
 
             assert 0 < SLIDE_OVERLAP_FACTOR < 1, \
-                f"Need sliding window overlap factor in (0,1)! The current overlap factor is: {SLIDE_OVERLAP_FACTOR}"
+                        f"Need sliding window overlap factor in (0,1)! The current overlap factor is: {SLIDE_OVERLAP_FACTOR}"
 
             image_shape = self.__full_image.shape[1:]
             dims = len(image_shape)
@@ -135,8 +135,9 @@ class KiTS19:
 
             for i in range(0, strides[0] * size[0], strides[0]):
                 for j in range(0, strides[1] * size[1], strides[1]):
-                    for k in range(0, strides[2] * size[2], strides[2]):
-                        self.__slice_indices.append((i, j, k))
+                    self.__slice_indices.extend(
+                        (i, j, k) for k in range(0, strides[2] * size[2], strides[2])
+                    )
 
             self.__result = np.zeros(shape=(1, 3, *image_shape), dtype=self.__full_image.dtype)
             self.__norm_map = self.__populate_norm_map(np.zeros_like(self.__result))

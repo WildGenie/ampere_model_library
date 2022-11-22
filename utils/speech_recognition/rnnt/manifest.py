@@ -84,11 +84,12 @@ class Manifest(object):
                     files_and_speeds = data['files']
 
                     if pad_to_max:
-                        if not speed_perturbation:
-                            min_speed = filter_speed
-                        else:
-                            min_speed = min(x['speed']
-                                            for x in files_and_speeds)
+                        min_speed = (
+                            min(x['speed'] for x in files_and_speeds)
+                            if speed_perturbation
+                            else filter_speed
+                        )
+
                         max_duration = self.max_duration * min_speed
 
                     data['duration'] = data['original_duration']
@@ -108,8 +109,9 @@ class Manifest(object):
                                                            table=table)
                     if not isinstance(transcript_text, str):
                         print(
-                            "WARNING: Got transcript: {}. It is not a string. Dropping data point".format(
-                                transcript_text))
+                            f"WARNING: Got transcript: {transcript_text}. It is not a string. Dropping data point"
+                        )
+
                         filtered_duration += data['duration']
                         continue
                     data["transcript"] = self.parse_transcript(

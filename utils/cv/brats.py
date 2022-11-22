@@ -46,7 +46,7 @@ class BraTS19:
         self.__dataset_dir_path = dataset_dir_path
         self.__preprocessed_dir_path = Path(self.__dataset_dir_path, "preprocessed")
 
-        self.__input_details = list()
+        self.__input_details = []
 
         if not self.__preprocessed_dir_path.is_dir():
             self.__preprocess()
@@ -104,13 +104,16 @@ class BraTS19:
                 flair = Path(patient_dir, f"{p}_flair.nii.gz")
                 seg = Path(patient_dir, f"{p}_seg.nii.gz")
 
-                assert all([
-                    isfile(t1),
-                    isfile(t1c),
-                    isfile(t2),
-                    isfile(flair),
-                    isfile(seg)
-                ]), "%s" % patient_name
+                assert all(
+                    [
+                        isfile(t1),
+                        isfile(t1c),
+                        isfile(t2),
+                        isfile(flair),
+                        isfile(seg),
+                    ]
+                ), f"{patient_name}"
+
 
                 shutil.copy(t1, Path(target_imagesTr, f"{patient_name}_0000.nii.gz"))
                 shutil.copy(t1c, Path(target_imagesTr, f"{patient_name}_0001.nii.gz"))
@@ -141,8 +144,10 @@ class BraTS19:
         json_dict['numTraining'] = len(patient_names)
         json_dict['numTest'] = 0
         json_dict['training'] = [
-            {'image': "./imagesTr/%s.nii.gz" % i, "label": "./labelsTr/%s.nii.gz" % i} for i in patient_names
+            {'image': f"./imagesTr/{i}.nii.gz", "label": f"./labelsTr/{i}.nii.gz"}
+            for i in patient_names
         ]
+
         json_dict['test'] = []
 
         save_json(json_dict, Path(target_base, "dataset.json"))
@@ -155,11 +160,9 @@ class BraTS19:
         from utils.cv.nnUNet.nnunet.inference.predict import preprocess_multithreaded
         from utils.cv.nnUNet.nnunet.training.model_restore import load_model_and_checkpoint_files
 
-        validation_files = list()
+        validation_files = []
         with open(Path(self.__dataset_dir_path, "fold1_validation.txt")) as f:
-            for line in f:
-                validation_files.append(line.rstrip())
-
+            validation_files.extend(line.rstrip() for line in f)
         raw_data_dir_path = self.__convert_data()
 
         all_files = subfiles(raw_data_dir_path, suffix=".nii.gz", join=False, sort=True)
@@ -186,7 +189,7 @@ class BraTS19:
             # Pad to the desired full volume
             d = pad_nd_image(d, trainer.patch_size, "constant", None, False, None)
 
-            with open(Path(self.__preprocessed_dir_path, output_filename + ".pkl"), "wb") as f:
+            with open(Path(self.__preprocessed_dir_path, f"{output_filename}.pkl"), "wb") as f:
                 pickle.dump([d, dct], f)
             f.close()
         with open(Path(self.__preprocessed_dir_path, "preprocessed_files.pkl"), "wb") as f:

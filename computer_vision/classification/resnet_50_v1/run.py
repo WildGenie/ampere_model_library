@@ -102,23 +102,24 @@ def main():
     args = parse_args()
     download_ampere_imagenet()
 
-    if args.framework == "pytorch":
-        if args.precision == "fp32":
-            run_pytorch_fp32(model_name="resnet50", **vars(args))
-        else:
-            print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
+    if args.framework == "pytorch" and args.precision == "fp32":
+        run_pytorch_fp32(model_name="resnet50", **vars(args))
+    elif (
+        args.framework == "pytorch"
+        or args.framework == "ort"
+        and args.precision != "fp32"
+    ):
+        print_goodbye_message_and_die(
+            f"this model seems to be unsupported in a specified precision: {args.precision}"
+        )
+
 
     elif args.framework == "ort":
-        if args.precision == "fp32":
-            run_ort_fp32(**vars(args))
-        else:
-            print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
-
+        run_ort_fp32(**vars(args))
     else:
         print_goodbye_message_and_die(
-            "this model seems to be unsupported in a specified framework: " + args.framework)
+            f"this model seems to be unsupported in a specified framework: {args.framework}"
+        )
 
 
 if __name__ == "__main__":

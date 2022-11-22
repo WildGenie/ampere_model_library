@@ -278,9 +278,10 @@ class Preprocessor:
         """
         current_shape = image.shape[1:]
         bounds = [max(0, ROI_SHAPE[i] - current_shape[i]) for i in range(3)]
-        paddings = [(0, 0)]
-        paddings.extend([(bounds[i] // 2, bounds[i] - bounds[i] // 2)
-                         for i in range(3)])
+        paddings = [
+            (0, 0),
+            *[(bounds[i] // 2, bounds[i] - bounds[i] // 2) for i in range(3)],
+        ]
 
         image = np.pad(image, paddings, mode="edge")
         label = np.pad(label, paddings, mode="edge")
@@ -293,8 +294,6 @@ class Preprocessor:
         Then, resample to the same, predetermined common voxel spacing (1.6, 1.2, 1.2)[mm]
         Also store auxiliary info for future use
         """
-        aux = dict()
-
         image = nibabel.load(
             Path(self.data_dir, case, "imaging.nii.gz").absolute())
         label = nibabel.load(
@@ -323,10 +322,12 @@ class Preprocessor:
             label = zoom(label, zoom_factor, order=0,
                          mode='constant', cval=label.min(), grid_mode=False)
 
-        aux['original_affine'] = original_affine
-        aux['reshaped_affine'] = reshaped_affine
-        aux['zoom_factor'] = zoom_factor
-        aux['case'] = case
+        aux = {
+            'original_affine': original_affine,
+            'reshaped_affine': reshaped_affine,
+            'zoom_factor': zoom_factor,
+            'case': case,
+        }
 
         image = np.expand_dims(image, 0)
         label = np.expand_dims(label, 0)
@@ -428,9 +429,10 @@ class Preprocessor:
                 path_to_nifti_dir / "imaging.nii.gz"))
             nibabel.save(nifti_label, Path(
                 path_to_nifti_dir / "segmentation.nii.gz"))
-            assert nifti_image.shape == nifti_label.shape, \
-                "While saving NIfTI files to {}, image: {} and label: {} have different shape".format(
-                    path_to_nifti_dir, nifti_image.shape, nifti_label.shape)
+            assert (
+                nifti_image.shape == nifti_label.shape
+            ), f"While saving NIfTI files to {path_to_nifti_dir}, image: {nifti_image.shape} and label: {nifti_label.shape} have different shape"
+
             print(f"Saved under {str(path_to_nifti_dir)} -- shape {image.shape} mean {mean} std {std}")
 
 
@@ -438,8 +440,7 @@ def preprocess_multiproc_helper(preproc, case):
     """
     Helps preprocessing with multi-processes
     """
-    aux = preproc.preprocess_case(case)
-    return aux
+    return preproc.preprocess_case(case)
 
 
 def save_preprocessed_info(preproc_dir, aux, targets):
@@ -454,7 +455,7 @@ def save_preprocessed_info(preproc_dir, aux, targets):
         return len(range(0, strides[0] * size[0], strides[0])) * len(range(0, strides[1] * size[1], strides[1])) \
                * len(range(0, strides[2] * size[2], strides[2]))
 
-    cases_info = {"cases": list(), "inferences_needed": 0}
+    cases_info = {"cases": [], "inferences_needed": 0}
     for case in aux["cases"].keys():
         cases_info["cases"].append(case)
         cases_info["inferences_needed"] += calc_inferences(aux["cases"][case]["image_shape"][1:])
@@ -466,10 +467,7 @@ def preprocess_with_multiproc(args):
     """
     preproc = Preprocessor(args)
     cases = preproc.collect_cases()
-    aux = {
-        'file_list': preproc.target_cases,
-        'cases': dict()
-    }
+    aux = {'file_list': preproc.target_cases, 'cases': {}}
     with Pool(args.num_proc) as p:
         pool_out = p.starmap(preprocess_multiproc_helper,
                              zip([preproc]*len(cases), cases))
@@ -498,7 +496,6 @@ def generate_hash_from_dataset(args):
     """
     results_dir = args.results_dir
     num_proc = args.num_proc
-    checksum = dict()
     CHECKSUM_FILE = CHECKSUM_CALIB_FILE if args.calibration else CHECKSUM_INFER_FILE
     results = [f for f in os.listdir(results_dir) if f.startswith(
         'case') and f.endswith('pkl')]
@@ -509,9 +506,7 @@ def generate_hash_from_dataset(args):
     with Pool(num_proc) as p:
         pool_out = p.map(generate_hash_from_volume, vol_path)
 
-    for vol, md5 in pool_out:
-        checksum[vol] = md5
-
+    checksum = dict(pool_out)
     with open(CHECKSUM_FILE, 'w') as f:
         json.dump(dict(sorted(checksum.items())), f, indent=4, sort_keys=True)
     f.close()
@@ -530,27 +525,27 @@ def verify_dataset(args):
     results = [f for f in os.listdir(results_dir) if f.startswith(
         'case') and f.endswith('pkl')]
     vol_path = [os.path.join(results_dir, v) for v in results]
-    violations = dict()
-
     print(f"Verifying checksums of preprocessed data in {results_dir}...")
     source = CHECKSUMS
-    assert len(source) == len(results),\
-        "checksum.json has {} entries while {} volumes found".format(
-            len(source), len(results))
+    assert len(source) == len(
+        results
+    ), f"checksum.json has {len(source)} entries while {len(results)} volumes found"
+
 
     with Pool(num_proc) as p:
         pool_out = p.map(generate_hash_from_volume, vol_path)
 
-    for vol, md5 in pool_out:
-        if md5 != source[vol]:
-            violations[vol] = (md5, source[vol])
+    violations = {
+        vol: (md5, source[vol]) for vol, md5 in pool_out if md5 != source[vol]
+    }
 
     if any(violations):
         for vol, (res, ref) in violations.items():
             print(f"{vol} -- Invalid hash, got {res} while expecting {ref}")
-        assert False,\
-            "Verification failed, {}/{} mismatch(es) found".format(
-                len(violations), len(results))
+        assert (
+            False
+        ), f"Verification failed, {len(violations)}/{len(results)} mismatch(es) found"
+
 
     p.join()
     p.close()
@@ -590,9 +585,7 @@ def parse_args():
                         default=4,
                         help="Number of processes to be used")
 
-    args = PARSER.parse_args()
-
-    return args
+    return PARSER.parse_args()
 
 
 def main():

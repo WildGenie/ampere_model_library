@@ -86,10 +86,10 @@ def advertise_aio(framework_name):
 
 def download_squad_1_1_dataset():
     from utils.downloads.utils import get_downloads_path
-    dataset_link1 = 'https://data.deepai.org/squad1.1.zip'
     squad_data = pathlib.Path(get_downloads_path(), "squad")
 
     if not pathlib.Path(squad_data).is_dir():
+        dataset_link1 = 'https://data.deepai.org/squad1.1.zip'
         try:
             subprocess.run(["wget", dataset_link1])
             subprocess.run(["mkdir", squad_data])
@@ -101,9 +101,6 @@ def download_squad_1_1_dataset():
             subprocess.run(["rm", 'dev-v1.1.json'])
             subprocess.run(["rm", 'train-v1.1.json'])
             subprocess.run(["rm", '-rf', squad_data])
-    else:
-        pass
-
     dataset = pathlib.Path(squad_data, 'dev-v1.1.json')
 
     os.environ["SQUAD_V1_1_PATH"] = str(dataset)
@@ -111,10 +108,10 @@ def download_squad_1_1_dataset():
 
 def download_conll_2003_dataset():
     from utils.downloads.utils import get_downloads_path
-    dataset_link = 'https://data.deepai.org/conll2003.zip'
     conll_data = pathlib.Path(get_downloads_path(), "conll")
 
     if not pathlib.Path(conll_data).is_dir():
+        dataset_link = 'https://data.deepai.org/conll2003.zip'
         subprocess.run(["wget", dataset_link])
         subprocess.run(["mkdir", conll_data])
         subprocess.run(["unzip", 'conll2003.zip', '-d', conll_data])
@@ -124,14 +121,14 @@ def download_conll_2003_dataset():
 
 def download_ampere_imagenet():
     from utils.downloads.utils import get_downloads_path
-    labels_link = "https://ampereaimodelzoo.s3.eu-central-1.amazonaws.com/ampere_imagenet_substitute_labels.txt"
-    images_link = "https://ampereaimodelzoo.s3.eu-central-1.amazonaws.com/ampere_imagenet_substitute.tar.gz"
     imagenet_data = pathlib.Path(get_downloads_path(), "imagenet")
 
     if pathlib.Path(imagenet_data).is_dir() and len(os.listdir(imagenet_data)) == 0:
         subprocess.run(["rm", '-rf', imagenet_data])
 
     if not pathlib.Path(imagenet_data).is_dir():
+        labels_link = "https://ampereaimodelzoo.s3.eu-central-1.amazonaws.com/ampere_imagenet_substitute_labels.txt"
+        images_link = "https://ampereaimodelzoo.s3.eu-central-1.amazonaws.com/ampere_imagenet_substitute.tar.gz"
         try:
             subprocess.run(["wget", labels_link])
             subprocess.run(["wget", images_link])
@@ -143,9 +140,6 @@ def download_ampere_imagenet():
             subprocess.run(["rm", 'ampere_imagenet_substitute_labels.txt'])
             subprocess.run(["rm", 'ampere_imagenet_substitute.tar.gz'])
             subprocess.run(["rm", '-rf', imagenet_data])
-    else:
-        pass
-
     dataset = pathlib.Path(imagenet_data)
     labels = pathlib.Path(imagenet_data, 'ampere_imagenet_substitute_labels.txt')
 

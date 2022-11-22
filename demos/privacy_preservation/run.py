@@ -118,11 +118,10 @@ if __name__ == "__main__":
         cap = cv2.VideoCapture(0)
         camera_exists = cap.get(cv2.CAP_PROP_FRAME_HEIGHT) != 0.0
         cap.release()
-        if camera_exists:
-            getter.src = 0
-            return redirect('/reset')
-        else:
+        if not camera_exists:
             return ('', 204)
+        getter.src = 0
+        return redirect('/reset')
 
     @app.route('/faces', methods=['POST'])
     def toggle_faces():

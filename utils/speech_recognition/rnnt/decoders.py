@@ -110,12 +110,11 @@ class ScriptGreedyDecoder(torch.nn.Module):
 
     def _joint_step(self, enc: torch.Tensor, pred: torch.Tensor, log_normalize: bool=False) -> torch.Tensor:
         logits = self._model.joint(enc, pred)[:, 0, 0, :]
-        if not log_normalize:
-            return logits
-
-        probs = F.log_softmax(logits, dim=len(logits.shape) - 1)
-
-        return probs
+        return (
+            F.log_softmax(logits, dim=len(logits.shape) - 1)
+            if log_normalize
+            else logits
+        )
 
     def _get_last_symb(self, labels: List[int]) -> int:
-        return self._SOS if len(labels) == 0 else labels[-1]
+        return labels[-1] if labels else self._SOS

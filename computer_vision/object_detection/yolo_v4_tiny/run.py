@@ -94,11 +94,14 @@ def main():
             run_tf_fp32(**vars(args))
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+
 
     else:
         print_goodbye_message_and_die(
-            "this model seems to be unsupported in a specified framework: " + args.framework)
+            f"this model seems to be unsupported in a specified framework: {args.framework}"
+        )
 
 
 if __name__ == "__main__":

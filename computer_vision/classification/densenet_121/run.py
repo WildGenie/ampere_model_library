@@ -105,22 +105,27 @@ def main():
             run_pytorch_fp32(model_name="densenet121", **vars(args))
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
-            
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+
+
     elif args.framework == "ort":
         if args.model_path is None:
             print_goodbye_message_and_die(
                 "a path to model is unspecified!")
-            
+
         elif args.precision == "fp32":
             run_ort_fp32(**vars(args))
         else:
             print_goodbye_message_and_die(
-                "this model seems to be unsupported in a specified precision: " + args.precision)
+                f"this model seems to be unsupported in a specified precision: {args.precision}"
+            )
+
 
     else:
         print_goodbye_message_and_die(
-            "this model seems to be unsupported in a specified framework: " + args.framework)
+            f"this model seems to be unsupported in a specified framework: {args.framework}"
+        )
 
 
 if __name__ == "__main__":

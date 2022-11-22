@@ -42,10 +42,12 @@ def get_intra_op_parallelism_threads():
 
         try:
             aio_num_threads = int(os.environ["AIO_NUM_THREADS"])
-            if omp_num_threads is not None:
-                if omp_num_threads != aio_num_threads:
-                    utils.print_goodbye_message_and_die(
-                        f"AIO_NUM_THREADS={aio_num_threads} inconsistent with OMP_NUM_THREADS={omp_num_threads}!")
+            if (
+                omp_num_threads is not None
+                and omp_num_threads != aio_num_threads
+            ):
+                utils.print_goodbye_message_and_die(
+                    f"AIO_NUM_THREADS={aio_num_threads} inconsistent with OMP_NUM_THREADS={omp_num_threads}!")
             intra_op_parallelism_threads = aio_num_threads
         except KeyError:
             pass
@@ -78,7 +80,7 @@ def benchmark_func(func, num_runs, timeout, warm_up=True):
     if warm_up:
         _ = benchmark(func)
 
-    latencies = list()
+    latencies = []
     if num_runs is None:
         i = 0
         benchmarking_start = time.time()
@@ -133,10 +135,13 @@ def run_model(single_pass_func, runner, dataset, batch_size, num_runs, timeout):
             for _ in tqdm(range(num_runs)):
                 single_pass_func(runner, dataset)
     except utils.OutOfInstances:
-        if os.environ.get("IGNORE_DATASET_LIMITS") == "1" and num_runs is None:
-            if dataset.reset():
-                return run_model(
-                    single_pass_func, runner, dataset, batch_size, num_runs, timeout - (time.time() - start))
+        if (
+            os.environ.get("IGNORE_DATASET_LIMITS") == "1"
+            and num_runs is None
+            and dataset.reset()
+        ):
+            return run_model(
+                single_pass_func, runner, dataset, batch_size, num_runs, timeout - (time.time() - start))
 
     return dataset.summarize_accuracy(), runner.print_performance_metrics(batch_size)
 
@@ -161,9 +166,10 @@ def print_performance_metrics(start_times: list, finish_times: list, num_runs: i
     else:
         assert len(start_times) == len(finish_times) == num_runs
 
-        latencies = []
-        for i in range(warm_up_runs, num_runs):
-            latencies.append(finish_times[i] - start_times[i])
+        latencies = [
+            finish_times[i] - start_times[i]
+            for i in range(warm_up_runs, num_runs)
+        ]
 
         mean_latency_sec = statistics.mean(latencies)
         median_latency_sec = statistics.median(latencies)

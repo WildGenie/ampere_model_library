@@ -27,15 +27,14 @@ def rnn(rnn, input_size, hidden_size, num_layers, norm=None,
     if norm not in [None]:
         raise ValueError(f"unknown norm={norm}")
 
-    if rnn == "lstm":
-        return LstmDrop(
-            input_size=input_size,
-            hidden_size=hidden_size,
-            num_layers=num_layers,
-            dropout=dropout,
-            forget_gate_bias=forget_gate_bias,
-            **kwargs
-        )
+    return LstmDrop(
+        input_size=input_size,
+        hidden_size=hidden_size,
+        num_layers=num_layers,
+        dropout=dropout,
+        forget_gate_bias=forget_gate_bias,
+        **kwargs
+    )
 
 
 class LstmDrop(torch.nn.Module):

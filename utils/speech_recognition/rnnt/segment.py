@@ -51,9 +51,7 @@ class AudioSegment(object):
             return False
         if self._samples.shape != other._samples.shape:
             return False
-        if np.any(self.samples != other._samples):
-            return False
-        return True
+        return not np.any(self.samples != other._samples)
 
     @staticmethod
     def _convert_samples_to_float32(samples):
@@ -65,10 +63,8 @@ class AudioSegment(object):
         if samples.dtype in np.sctypes['int']:
             bits = np.iinfo(samples.dtype).bits
             float32_samples *= (1. / 2 ** (bits - 1))
-        elif samples.dtype in np.sctypes['float']:
-            pass
-        else:
-            raise TypeError("Unsupported sample type: %s." % samples.dtype)
+        elif samples.dtype not in np.sctypes['float']:
+            raise TypeError(f"Unsupported sample type: {samples.dtype}.")
         return float32_samples
 
     @classmethod

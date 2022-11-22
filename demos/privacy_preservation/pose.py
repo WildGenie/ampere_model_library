@@ -12,10 +12,7 @@ class Pose:
     """
 
     def __init__(self, path, num_threads, det_pose_queue, pose_postprocessor_queue, frames):
-        if "lightning" in path:
-            self.shape = 192
-        else:
-            self.shape = 256
+        self.shape = 192 if "lightning" in path else 256
         self.frame = None # Full frame
         self.humans = None
         self.stopped = True
